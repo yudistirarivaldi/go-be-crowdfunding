@@ -2,7 +2,7 @@ package helper
 
 type Response struct {
 	Meta Meta        `json:"meta"`
-	Data interface{} `json:"data"` //agar nilai nya bebas berubah dan fleksibel
+	Data interface{} `json:"data"` //agar nilai nya bebas berubah dan fleksibel // data bisa bernilai apa saja
 }
 
 type Meta struct {
