@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 )
 
 type userHandler struct {
@@ -26,17 +27,32 @@ func (h *userHandler) RegisterUser(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&input) //mengubah struct ke json
 	if err != nil {
-		c.JSON(http.StatusBadRequest, err)
+		var errors []string
+
+		for _, e := range err.(validator.ValidationErrors) { //ngubah err ke validator.ValidationErrors
+			errors = append(errors, e.Error())
+		}
+
+		errorMessage := gin.H{ "errors" : errors }
+
+		response := helper.APIResponse("Register user gagal di tambahkan", http.StatusUnprocessableEntity, "error", errorMessage)
+		c.JSON(http.StatusUnprocessableEntity, response)
+		return //agar eksekusi stop di sini
 	}
 
-	 user, err := h.userService.RegisterUser(input)
+	 newUser, err := h.userService.RegisterUser(input)
 	 
-
 	 if err != nil {
-		c.JSON(http.StatusBadRequest, err)
+		response := helper.APIResponse("Register user gagal di tambahkan", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return //agar eksekusi stop di sini
 	 }
 
-	response := helper.APIResponse("User berhasil ditambahkan", http.StatusOK, "success", user)
+	//  token, err := h.jwtService.GenerateToken(user)
+
+	formatter := user.FormatUser(newUser, "tokenjwt")
+
+	response := helper.APIResponse("Register User berhasil ditambahkan", http.StatusOK, "success", formatter)
 
 	c.JSON(http.StatusOK, response)
 
