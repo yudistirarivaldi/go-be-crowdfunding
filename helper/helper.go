@@ -30,7 +30,7 @@ func APIResponse(message string, code int, status string, data interface{}) Resp
 
 }
 
-func FormatError(err error) []string {
+func FormatValidationError(err error) []string {
 
 	var errors []string
 
