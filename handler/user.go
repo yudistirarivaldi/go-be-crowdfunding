@@ -28,7 +28,7 @@ func (h *userHandler) RegisterUser(c *gin.Context) {
 	if err != nil {
 		var errors []string
 
-		errors = helper.FormatError(err)
+		errors = helper.FormatValidationError(err)
 
 		errorMessage := gin.H{ "errors" : errors }
 
