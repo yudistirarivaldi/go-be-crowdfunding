@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator/v10"
 )
 
 type userHandler struct {
@@ -29,9 +28,7 @@ func (h *userHandler) RegisterUser(c *gin.Context) {
 	if err != nil {
 		var errors []string
 
-		for _, e := range err.(validator.ValidationErrors) { //ngubah err ke validator.ValidationErrors
-			errors = append(errors, e.Error())
-		}
+		errors = helper.FormatError(err)
 
 		errorMessage := gin.H{ "errors" : errors }
 
