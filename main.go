@@ -23,8 +23,6 @@ func main() {
 	userRepository := user.NewRepository(db)
 	userService := user.NewService(userRepository)
 	
-
-
 	
 
 	userHandler := handler.NewUserHandler(userService)
@@ -34,10 +32,27 @@ func main() {
 
 	api.POST("/user", userHandler.RegisterUser)
 	api.POST("/sessions", userHandler.Login)
+	api.POST("/email_checkers", userHandler.CheckEmailAvailability)
 
 	router.Run()
+	// =================================================
+	// CEK EMAIL TERSEDIA ATAU TIDAK MENGGUNAKAN SERVICE
+	// =================================================
 
-	// test service nyari email
+	// input := user.CheckEmailInput {
+	// 	Email: "pesulapmerah123@gmail.com",
+	// }
+
+	// bool, err := userService.IsEmailAvailable(input)
+	// if err != nil {
+	// 	fmt.Println("Gagal")
+	// }
+	
+	// fmt.Println(bool)
+
+	// ====================================
+	// TEST NYARI EMAIL MENGGUNAKAN SERVICE
+	// ====================================
 
 	// input := user.LoginInput {
 	// 	Email: "yudistira@gmail.com",
@@ -55,7 +70,9 @@ func main() {
 	// fmt.Println(user.Email)
 	// fmt.Println(user.Name)
 
-	// test find by email with repository
+	// =========================================
+	// TEST FIND BY EMAIL MENGGUNAKAN REPOSITORY
+	// =========================================
 
 	// userByEmail, err := userRepository.FindByEmail("samsudin@gmail.com")
 
@@ -65,8 +82,9 @@ func main() {
 
 	// fmt.Println(userByEmail.Name)
 
-
-	// test create user menggunakan service
+	// ====================================
+	// TEST CREATE USER MENGGUNAKAN SERVICE
+	// ====================================
 
 	// userInput := user.RegisterUserInput{}
 	// userInput.Name = "Pesulap merah"
@@ -76,8 +94,9 @@ func main() {
 
 	// userService.RegisterUser(userInput)
 
-
-	// test Create User menggunakan repository
+	// =======================================
+	// TEST CREATE USER MENGGUNAKAN REPOSITORY
+	// =======================================
 
 	// user := user.User {
 	// 	Name : "Gus Samsudin",
