@@ -24,6 +24,7 @@ func main() {
 	userService := user.NewService(userRepository)
 	
 	
+	
 
 	userHandler := handler.NewUserHandler(userService)
 	
@@ -33,8 +34,38 @@ func main() {
 	api.POST("/user", userHandler.RegisterUser)
 	api.POST("/sessions", userHandler.Login)
 	api.POST("/email_checkers", userHandler.CheckEmailAvailability)
+	api.POST("/avatar", userHandler.UploadAvatar)
 
 	router.Run()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	// =============================
+	// TEST UPLOAD AVATAR IN SERVICE
+	// =============================
+
+	// userService.SaveAvatar(6, "images/1-profile.png")
+	
 	// =================================================
 	// CEK EMAIL TERSEDIA ATAU TIDAK MENGGUNAKAN SERVICE
 	// =================================================
