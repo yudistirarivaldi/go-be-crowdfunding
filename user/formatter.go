@@ -1,5 +1,7 @@
 package user
 
+// fungsi struct ini agar mengubah menjadi format json
+
 type UserFormatter struct {
 	ID         int    `json:"id"`
 	Name       string `json:"name"`
