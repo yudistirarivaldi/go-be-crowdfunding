@@ -187,8 +187,6 @@ func (h *userHandler) UploadAvatar(c *gin.Context) {
 		return
 	}
 
-	
-
 	_, err = h.userService.SaveAvatar(userID, path)
 	if err != nil {
 		data := gin.H {

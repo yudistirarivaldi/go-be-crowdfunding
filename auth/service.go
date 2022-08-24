@@ -1,13 +1,17 @@
 package auth
 
-import "github.com/dgrijalva/jwt-go"
+import (
+	"errors"
+
+	"github.com/dgrijalva/jwt-go"
+)
 
 type Service interface {
 	GenerateToken(userID int ) (string, error)
+	ValidateToken(encodedToken string) (*jwt.Token, error) //encoded token adalah memasukan token yang udah di dapat
 }
 
-type jwtService struct {
-}
+type jwtService struct {}
 
 var SECRETKEY = []byte("secretkeycrowdfunding") 
 
@@ -33,3 +37,26 @@ func (s *jwtService) GenerateToken(userID int) (string, error) {
 	return signedToken, nil
 
 }
+
+func (s *jwtService) ValidateToken(encodedToken string) (*jwt.Token, error) {
+
+	token, err := jwt.Parse(encodedToken, func(token *jwt.Token) (interface{}, error) {
+		_, ok := token.Method.(*jwt.SigningMethodHMAC) // cara baca nya jika token methodnya hmac true
+
+		if !ok { //jika bukan hmac
+			return nil, errors.New("Invalid token")
+		}
+
+		return []byte(SECRETKEY), nil //return pengembalian func(token *jwt.Token)
+		
+	})
+
+	if err != nil {
+		return token, err
+	}
+
+	return token, nil
+
+
+}
+
