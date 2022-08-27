@@ -1,7 +1,7 @@
 # go-api-crowdfunding
 
 
-TEST CREATE USER MENGGUNAKAN SERVICE
+# TEST CREATE USER MENGGUNAKAN SERVICE
 
 
 userInput := user.RegisterUserInput{}
@@ -13,7 +13,7 @@ userInput.Password = "12345"
 userService.RegisterUser(userInput)
 
 
-TEST CREATE USER MENGGUNAKAN REPOSITORY
+# TEST CREATE USER MENGGUNAKAN REPOSITORY
 
 
 user := user.User {
