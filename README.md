@@ -1,5 +1,27 @@
 # go-api-crowdfunding
 
+
+# TEST JWT TOKEN
+	
+fmt.Println(authService.GenerateToken(1001))
+
+TEST UPLOAD AVATAR IN SERVICE
+	
+userService.SaveAvatar(6, "images/1-profile.png")	
+	
+# CEK EMAIL TERSEDIA ATAU TIDAK MENGGUNAKAN SERVICE
+
+input := user.CheckEmailInput {
+Email: "pesulapmerah123@gmail.com",
+}
+
+bool, err := userService.IsEmailAvailable(input)
+if err != nil {
+fmt.Println("Gagal")
+}
+	
+fmt.Println(bool)
+
 #TEST NYARI EMAIL MENGGUNAKAN SERVICE
 
 input := user.LoginInput {
