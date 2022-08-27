@@ -3,9 +3,13 @@ package main
 import (
 	"crowdfunding/auth"
 	"crowdfunding/handler"
+	"crowdfunding/helper"
 	"crowdfunding/user"
 	"log"
+	"net/http"
+	"strings"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -26,6 +30,7 @@ func main() {
 	
 	authService := auth.NewService()
 
+
 	userHandler := handler.NewUserHandler(userService, authService)
 	
 	router := gin.Default()
@@ -34,10 +39,92 @@ func main() {
 	api.POST("/user", userHandler.RegisterUser)
 	api.POST("/sessions", userHandler.Login)
 	api.POST("/email_checkers", userHandler.CheckEmailAvailability)
-	api.POST("/avatar", userHandler.UploadAvatar)
+	api.POST("/avatar", authMiddleware(authService, userService), userHandler.UploadAvatar)
 
 	router.Run()
 
+	}
+
+
+func authMiddleware(authService auth.Service, userService user.Service) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		authHeader := c.GetHeader("Authorization")
+
+		if !strings.Contains(authHeader, "Bearer") { //apakah di authheader ada kawa bearer
+			response := helper.APIResponse("Unauthorized", http.StatusUnauthorized,  "error", nil)
+			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
+			return
+		}
+
+		// default Bearer tookentokentoken karena kita ingin ambil token jadi harus di splitt
+		tokenString := ""
+		arrayToken := strings.Split(authHeader, " ")
+		if len(tokenString) == 2 {
+			tokenString = arrayToken[1] //[Bearer, tokentokentoken]
+		}
+
+		// validasi token
+		token, err := authService.ValidateToken(tokenString)
+		if err != nil {
+			response := helper.APIResponse("Unauthorized", http.StatusUnauthorized,  "error", nil)
+			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
+			return
+		}
+
+		claim, ok := token.Claims.(jwt.MapClaims)
+
+		if !ok || !token.Valid {
+			response := helper.APIResponse("Unauthorized", http.StatusUnauthorized,  "error", nil)
+			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
+			return
+		}
+
+		userID := int(claim["user_id"].(float64))
+
+		user, err := userService.GetUserByID(userID)
+		if err != nil {
+			response := helper.APIResponse("Unauthorized", http.StatusUnauthorized,  "error", nil)
+			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
+			return
+		}
+
+		c.Set("currentUser", user)
+
+}
+
+}
+
+	// INI ADALAH FUNCTION LAMA DAN YANG TERBARU ADA LAH DIATAS
+
+	// func authMiddleware(c *gin.Context) {
+
+	// 	authHeader := c.GetHeader("Authorization")
+
+	// 	if !strings.Contains(authHeader, "Bearer") { //apakah di authheader ada kawa bearer
+	// 		response := helper.APIResponse("Unauthorized", http.StatusUnauthorized,  "error", nil)
+	// 		c.AbortWithStatusJSON(http.StatusUnauthorized, response)
+	// 		return
+	// 	}
+
+	// 	// default Bearer tookentokentoken karena kita ingin ambil token jadi harus di splitt
+	// 	tokenString := ""
+	// 	arrayToken := strings.Split(authHeader, " ")
+	// 	if len(tokenString) == 2 {
+	// 		tokenString = arrayToken[1] //[Bearer, tokentokentoken]
+	// 	}
+
+	// 	// validasi token
+	// 	token, err := 
+
+
+	// LANGKAH LANGKAH MIDDLEWARE MENGGUNAKAN JWT
+
+	// ambil nilai header Authorization: Bearer tokentoken/isi dari generate token
+	// dari header authorization, ambil nilai dari tokennya saja
+	// validasi token
+	// ambil user_id
+	// ambil user dari db berdasarkan user_id lewat service
+	// kita set context isinya user
 
 
 
@@ -47,8 +134,22 @@ func main() {
 
 
 
+	// =============================
+	// TEST JWT TOKEN VALIDATIOn
+	// =============================
 
 
+	// token,err := authService.ValidateToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxfQ.zMk3KISsMiv_cBrc5H2oxyT0JXeGJUwPm4VDY0C-yXc")
+
+	// if err != nil {
+	// 	fmt.Println("Error JWT Valdiation")
+	// }
+
+	// if token.Valid {
+	// 	fmt.Println("Successsssssssssss valid")
+	// } else {
+	// 	fmt.Println("Invalidddddddddddddddd")
+	// }
 
 
 
@@ -144,4 +245,5 @@ func main() {
 
 	
 
-}
+
+	
