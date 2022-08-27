@@ -1,5 +1,22 @@
 # go-api-crowdfunding
 
+#TEST NYARI EMAIL MENGGUNAKAN SERVICE
+
+input := user.LoginInput {
+Email: "yudistira@gmail.com",
+Password: "yudistirar626",
+}
+
+user, err := userService.LoginUser(input)
+
+if err != nil {
+fmt.Println("Gagal Login")
+fmt.Println(err.Error())
+return
+}
+	
+fmt.Println(user.Email)
+fmt.Println(user.Name)
 
 # TEST FIND BY EMAIL MENGGUNAKAN REPOSITORY
 	
@@ -12,7 +29,6 @@ fmt.Println(err.Error())
 fmt.Println(userByEmail.Name)
 
 # TEST CREATE USER MENGGUNAKAN SERVICE
-
 
 userInput := user.RegisterUserInput{}
 userInput.Name = "Pesulap merah"
