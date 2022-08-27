@@ -6,7 +6,6 @@ import (
 	"crowdfunding/handler"
 	"crowdfunding/helper"
 	"crowdfunding/user"
-	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -28,31 +27,15 @@ func main() {
 	// fmt.Println("Connection to Database Successful")
 
 	userRepository := user.NewRepository(db)
-
-	campainRepository :=campaign.NewRepository(db)
-
-	campaigns, err := campainRepository.FindByUserID(1)
-
-	fmt.Println(len(campaigns))
-
-	for _, campaignsss := range campaigns {
-		fmt.Println(campaignsss.Name)
-
-		if len(campaignsss.CampaignImages) > 0 {
-			fmt.Println("Jumlah gambar", (len(campaignsss.CampaignImages)))
-			fmt.Println(campaignsss.CampaignImages[0].FileName) //data yang di ambil cuman satu aja
-		}
-
-		
-	}
-
+	campaignRepository := campaign.NewRepository(db)
 
 	userService := user.NewService(userRepository)
+	campaignService := campaign.NewService(campaignRepository)
 	
 	authService := auth.NewService()
 
-
 	userHandler := handler.NewUserHandler(userService, authService)
+	campaignHandler := handler.NewCampaignHandler(campaignService)
 	
 	router := gin.Default()
 	api := router.Group("api/v1")
@@ -61,6 +44,8 @@ func main() {
 	api.POST("/sessions", userHandler.Login)
 	api.POST("/email_checkers", userHandler.CheckEmailAvailability)
 	api.POST("/avatar", authMiddleware(authService, userService), userHandler.UploadAvatar)
+
+	api.GET("/campaigns", campaignHandler.GetCampaigns)
 
 	router.Run()
 
@@ -115,6 +100,14 @@ func authMiddleware(authService auth.Service, userService user.Service) gin.Hand
 }
 
 }
+
+	// =========================
+	// TEST FIND CAMPAIGNS
+	// =========================
+
+	// campaignService := campaign.NewService(campainRepository)
+
+	// campaign, err := campaignService.FindCampaigns(2)
 
 	// =========================
 	// TEST FIND BY USER ID CAMPAIGN RELASI TO CAMPAIGN IMAGES
