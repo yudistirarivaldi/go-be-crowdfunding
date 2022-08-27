@@ -1,6 +1,16 @@
 # go-api-crowdfunding
 
 
+# TEST FIND BY EMAIL MENGGUNAKAN REPOSITORY
+	
+userByEmail, err := userRepository.FindByEmail("samsudin@gmail.com")
+
+if err != nil {
+fmt.Println(err.Error())
+}
+
+fmt.Println(userByEmail.Name)
+
 # TEST CREATE USER MENGGUNAKAN SERVICE
 
 
