@@ -72,7 +72,7 @@ func authMiddleware(authService auth.Service, userService user.Service) gin.Hand
 			return
 		}
 
-		claim, ok := token.Claims.(jwt.MapClaims)
+		claim, ok := token.Claims.(jwt.MapClaims) //ubah token jwt ke map jw mapclains supaya bisa ngambil user id
 
 		if !ok || !token.Valid {
 			response := helper.APIResponse("Unauthorized", http.StatusUnauthorized,  "error", nil)
@@ -80,7 +80,7 @@ func authMiddleware(authService auth.Service, userService user.Service) gin.Hand
 			return
 		}
 
-		userID := int(claim["user_id"].(float64))
+		userID := int(claim["user_id"].(float64)) //claim has format map then convert to float 64 and then convert to integer
 
 		user, err := userService.GetUserByID(userID)
 		if err != nil {
@@ -94,29 +94,6 @@ func authMiddleware(authService auth.Service, userService user.Service) gin.Hand
 }
 
 }
-
-	// INI ADALAH FUNCTION LAMA DAN YANG TERBARU ADA LAH DIATAS
-
-	// func authMiddleware(c *gin.Context) {
-
-	// 	authHeader := c.GetHeader("Authorization")
-
-	// 	if !strings.Contains(authHeader, "Bearer") { //apakah di authheader ada kawa bearer
-	// 		response := helper.APIResponse("Unauthorized", http.StatusUnauthorized,  "error", nil)
-	// 		c.AbortWithStatusJSON(http.StatusUnauthorized, response)
-	// 		return
-	// 	}
-
-	// 	// default Bearer tookentokentoken karena kita ingin ambil token jadi harus di splitt
-	// 	tokenString := ""
-	// 	arrayToken := strings.Split(authHeader, " ")
-	// 	if len(tokenString) == 2 {
-	// 		tokenString = arrayToken[1] //[Bearer, tokentokentoken]
-	// 	}
-
-	// 	// validasi token
-	// 	token, err := 
-
 
 	// LANGKAH LANGKAH MIDDLEWARE MENGGUNAKAN JWT
 
