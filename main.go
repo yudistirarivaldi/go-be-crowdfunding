@@ -2,9 +2,11 @@ package main
 
 import (
 	"crowdfunding/auth"
+	"crowdfunding/campaign"
 	"crowdfunding/handler"
 	"crowdfunding/helper"
 	"crowdfunding/user"
+	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -26,6 +28,25 @@ func main() {
 	// fmt.Println("Connection to Database Successful")
 
 	userRepository := user.NewRepository(db)
+
+	campainRepository :=campaign.NewRepository(db)
+
+	campaigns, err := campainRepository.FindByUserID(1)
+
+	fmt.Println(len(campaigns))
+
+	for _, campaignsss := range campaigns {
+		fmt.Println(campaignsss.Name)
+
+		if len(campaignsss.CampaignImages) > 0 {
+			fmt.Println("Jumlah gambar", (len(campaignsss.CampaignImages)))
+			fmt.Println(campaignsss.CampaignImages[0].FileName) //data yang di ambil cuman satu aja
+		}
+
+		
+	}
+
+
 	userService := user.NewService(userRepository)
 	
 	authService := auth.NewService()
@@ -94,6 +115,41 @@ func authMiddleware(authService auth.Service, userService user.Service) gin.Hand
 }
 
 }
+
+	// =========================
+	// TEST FIND BY USER ID CAMPAIGN RELASI TO CAMPAIGN IMAGES
+	// =========================
+
+	// campainRepository :=campaign.NewRepository(db)
+
+	// campaigns, err := campainRepository.FindByUserID(1)
+
+	// fmt.Println(len(campaigns))
+
+	// for _, campaignsss := range campaigns {
+	// 	fmt.Println(campaignsss.Name)
+
+	// 	if len(campaignsss.CampaignImages) > 0 {
+	// 		fmt.Println("Jumlah gambar", (len(campaignsss.CampaignImages)))
+	// 		fmt.Println(campaignsss.CampaignImages[0].FileName) //data yang di ambil cuman satu aja
+	// 	}
+
+		
+	// }
+
+
+	// =========================
+	// TEST FIND ALL REPOSITORY
+	// =========================
+
+	// campaigns, err := campainRepository.FindAll()
+
+	// 	fmt.Println(len(campaigns))
+
+	// 	for _, campaignsss := range campaigns {
+	// 		fmt.Println(campaignsss.Name)
+	// 	}
+
 
 	// LANGKAH LANGKAH MIDDLEWARE MENGGUNAKAN JWT
 
