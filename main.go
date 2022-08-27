@@ -46,12 +46,13 @@ func main() {
 	}
 
 
+// karena ingin function validation token & get user by id maka harus begini bentuk functionnya 
 func authMiddleware(authService auth.Service, userService user.Service) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
 
-		if !strings.Contains(authHeader, "Bearer") { //apakah di authheader ada kawa bearer
-			response := helper.APIResponse("Unauthorized", http.StatusUnauthorized,  "error", nil)
+		if !strings.Contains(authHeader, "Bearer") { //apakah di authheader ada kata bearer
+			response := helper.APIResponse("Unauthorized", http.StatusUnauthorized, "error", nil)
 			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
 			return
 		}
@@ -59,7 +60,7 @@ func authMiddleware(authService auth.Service, userService user.Service) gin.Hand
 		// default Bearer tookentokentoken karena kita ingin ambil token jadi harus di splitt
 		tokenString := ""
 		arrayToken := strings.Split(authHeader, " ")
-		if len(tokenString) == 2 {
+		if len(arrayToken) == 2 {
 			tokenString = arrayToken[1] //[Bearer, tokentokentoken]
 		}
 
@@ -125,13 +126,6 @@ func authMiddleware(authService auth.Service, userService user.Service) gin.Hand
 	// ambil user_id
 	// ambil user dari db berdasarkan user_id lewat service
 	// kita set context isinya user
-
-
-
-
-
-
-
 
 
 	// =============================
