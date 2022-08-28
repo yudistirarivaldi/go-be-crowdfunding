@@ -81,11 +81,15 @@ func FormatCampaignDetail(campaign Campaign) CampaignDetailFormatter {
 	campaignDetailFormatter.UserID = campaign.UserID
 	campaignDetailFormatter.Slug = campaign.Slug
 
+	// buatt images url
+
 	campaignDetailFormatter.ImageURL = ""
 
 	if len(campaign.CampaignImages) > 0 {
 		campaignDetailFormatter.ImageURL = campaign.CampaignImages[0].FileName
 	}
+
+	// buat perks
 
 	var perks []string
 
@@ -95,6 +99,8 @@ func FormatCampaignDetail(campaign Campaign) CampaignDetailFormatter {
 
 	campaignDetailFormatter.Perks = perks
 
+	// buat user
+
 	user := campaign.User
 
 	campaignUserFormatter := CampaignUserFormatter{}
@@ -103,13 +109,15 @@ func FormatCampaignDetail(campaign Campaign) CampaignDetailFormatter {
 	
 	campaignDetailFormatter.User = campaignUserFormatter
 
-	images := []CampaignImageFormatter{}
+	// buat images
+
+	images := []CampaignImageFormatter{} //sekalian bikin default kalo gk ada datanya []
 
 	for _, image := range campaign.CampaignImages {
 		campaignImageFormatter := CampaignImageFormatter{}
 		campaignImageFormatter.ImagesURL = image.FileName
 
-		isPrimary := false
+		isPrimary := false //nilai default false
 
 		if image.IsPrimary == 1 {
 			isPrimary = true
