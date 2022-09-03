@@ -31,8 +31,9 @@ func main() {
 
 	userService := user.NewService(userRepository)
 	campaignService := campaign.NewService(campaignRepository)
-	
 	authService := auth.NewService()
+
+	
 
 	userHandler := handler.NewUserHandler(userService, authService)
 	campaignHandler := handler.NewCampaignHandler(campaignService)
@@ -48,6 +49,7 @@ func main() {
 
 	api.GET("/campaigns", campaignHandler.GetCampaigns)
 	api.GET("/campaigns/:id", campaignHandler.GetCampaign)
+	api.POST("/campaigns", authMiddleware(authService, userService), campaignHandler.CreateCampaign) //ngmbil user yg lg login
 
 	router.Run()
 
@@ -102,6 +104,26 @@ func authMiddleware(authService auth.Service, userService user.Service) gin.Hand
 }
 
 }
+
+	// =========================
+	// TEST CREATE CAMPAIGNS
+	// =========================
+
+	// input := campaign.CreateCampaignInput{}
+	// input.Name = "Penggalangan dana start up"
+	// input.ShortDescription = "short description"
+	// input.Description = "testtttttttttttttttt"
+	// input.GoalAmount = 100000
+	// input.Perks = "hadiah satu, dua, tiga"
+	
+	// inputUser, _ := userService.GetUserByID(1)
+	
+	// input.User = inputUser
+
+	// _, err = campaignService.CreateCampaign(input)
+	// if err != nil {
+	// 	log.Fatal(err.Error())
+	// }
 
 	// =========================
 	// TEST FIND CAMPAIGNS
