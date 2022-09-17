@@ -5,6 +5,7 @@ import (
 	"crowdfunding/campaign"
 	"crowdfunding/handler"
 	"crowdfunding/helper"
+	"crowdfunding/payment"
 	"crowdfunding/transaction"
 	"crowdfunding/user"
 	"log"
@@ -34,8 +35,8 @@ func main() {
 	userService := user.NewService(userRepository)
 	campaignService := campaign.NewService(campaignRepository)
 	authService := auth.NewService()
-	transactionService := transaction.NewService(transacionRepository, campaignRepository)
-	
+	paymentService := payment.NewService()
+	transactionService := transaction.NewService(transacionRepository, campaignRepository, paymentService)
 
 	userHandler := handler.NewUserHandler(userService, authService)
 	campaignHandler := handler.NewCampaignHandler(campaignService)
@@ -57,6 +58,8 @@ func main() {
 	api.POST("/campaign-images", authMiddleware(authService, userService), campaignHandler.UploadImage)
 
 	api.GET("/campaigns/:id/transactions", authMiddleware(authService, userService), transactionHandler.GetCampaignTransactions)
+	api.GET("/transactions", authMiddleware(authService, userService), transactionHandler.GetUsertransactions)
+	api.POST("/transactions", authMiddleware(authService, userService), transactionHandler.CreateTransaction)
 
 	router.Run()
 
@@ -112,182 +115,199 @@ func authMiddleware(authService auth.Service, userService user.Service) gin.Hand
 
 }
 
-	// =========================
-	// TEST CREATE CAMPAIGNS
-	// =========================
 
-	// input := campaign.CreateCampaignInput{}
-	// input.Name = "Penggalangan dana start up"
-	// input.ShortDescription = "short description"
-	// input.Description = "testtttttttttttttttt"
-	// input.GoalAmount = 100000
-	// input.Perks = "hadiah satu, dua, tiga"
+// =========================
+// 	TEST CREATE TRANSACTIONS
+// 	=========================
+
+// 	user, _ := userService.GetUserByID(2)
+
+// 	input := transaction.CreateTransactionInput{
+// 		CampaignID: 2,
+// 		Amount: 50000,
+// 		User: user,
+// 	}
+
+// 	transactionService.CreateTransaction(input)
+
+// 	=========================
+// 	TEST CREATE CAMPAIGNS
+// 	=========================
+
+// 	input := campaign.CreateCampaignInput{}
+// 	input.Name = "Penggalangan dana start up"
+// 	input.ShortDescription = "short description"
+// 	input.Description = "testtttttttttttttttt"
+// 	input.GoalAmount = 100000
+// 	input.Perks = "hadiah satu, dua, tiga"
 	
-	// inputUser, _ := userService.GetUserByID(1)
+// 	inputUser, _ := userService.GetUserByID(1)
 	
-	// input.User = inputUser
+// 	input.User = inputUser
 
-	// _, err = campaignService.CreateCampaign(input)
-	// if err != nil {
-	// 	log.Fatal(err.Error())
-	// }
+// 	_, err = campaignService.CreateCampaign(input)
+// 	if err != nil {
+// 		log.Fatal(err.Error())
+// 	}
 
-	// =========================
-	// TEST FIND CAMPAIGNS
-	// =========================
+// 	=========================
+// 	TEST FIND CAMPAIGNS
+// 	=========================
 
-	// campaignService := campaign.NewService(campainRepository)
+// 	campaignService := campaign.NewService(campainRepository)
 
-	// campaign, err := campaignService.FindCampaigns(2)
+// 	campaign, err := campaignService.FindCampaigns(2)
 
-	// =========================
-	// TEST FIND BY USER ID CAMPAIGN RELASI TO CAMPAIGN IMAGES
-	// =========================
+// 	=========================
+// 	TEST FIND BY USER ID CAMPAIGN RELASI TO CAMPAIGN IMAGES
+// 	=========================
 
-	// campainRepository :=campaign.NewRepository(db)
+// 	campainRepository :=campaign.NewRepository(db)
 
-	// campaigns, err := campainRepository.FindByUserID(1)
+// 	campaigns, err := campainRepository.FindByUserID(1)
 
-	// fmt.Println(len(campaigns))
+// 	fmt.Println(len(campaigns))
 
-	// for _, campaignsss := range campaigns {
-	// 	fmt.Println(campaignsss.Name)
+// 	for _, campaignsss := range campaigns {
+// 		fmt.Println(campaignsss.Name)
 
-	// 	if len(campaignsss.CampaignImages) > 0 {
-	// 		fmt.Println("Jumlah gambar", (len(campaignsss.CampaignImages)))
-	// 		fmt.Println(campaignsss.CampaignImages[0].FileName) //data yang di ambil cuman satu aja
-	// 	}
+// 		if len(campaignsss.CampaignImages) > 0 {
+// 			fmt.Println("Jumlah gambar", (len(campaignsss.CampaignImages)))
+// 			fmt.Println(campaignsss.CampaignImages[0].FileName) //data yang di ambil cuman satu aja
+// 		}
 
 		
-	// }
+// 	}
 
 
-	// =========================
-	// TEST FIND ALL REPOSITORY
-	// =========================
+// 	=========================
+// 	TEST FIND ALL REPOSITORY
+// 	=========================
 
-	// campaigns, err := campainRepository.FindAll()
+// 	campaigns, err := campainRepository.FindAll()
 
-	// 	fmt.Println(len(campaigns))
+// 		fmt.Println(len(campaigns))
 
-	// 	for _, campaignsss := range campaigns {
-	// 		fmt.Println(campaignsss.Name)
-	// 	}
-
-
-	// LANGKAH LANGKAH MIDDLEWARE MENGGUNAKAN JWT
-
-	// ambil nilai header Authorization: Bearer tokentoken/isi dari generate token
-	// dari header authorization, ambil nilai dari tokennya saja
-	// validasi token
-	// ambil user_id
-	// ambil user dari db berdasarkan user_id lewat service
-	// kita set context isinya user
+// 		for _, campaignsss := range campaigns {
+// 			fmt.Println(campaignsss.Name)
+// 		}
 
 
-	// =============================
-	// TEST JWT TOKEN VALIDATIOn
-	// =============================
+// 	LANGKAH LANGKAH MIDDLEWARE MENGGUNAKAN JWT
+
+// 	ambil nilai header Authorization: Bearer tokentoken/isi dari generate token
+// 	dari header authorization, ambil nilai dari tokennya saja
+// 	validasi token
+// 	ambil user_id
+// 	ambil user dari db berdasarkan user_id lewat service
+// 	kita set context isinya user
 
 
-	// token,err := authService.ValidateToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxfQ.zMk3KISsMiv_cBrc5H2oxyT0JXeGJUwPm4VDY0C-yXc")
-
-	// if err != nil {
-	// 	fmt.Println("Error JWT Valdiation")
-	// }
-
-	// if token.Valid {
-	// 	fmt.Println("Successsssssssssss valid")
-	// } else {
-	// 	fmt.Println("Invalidddddddddddddddd")
-	// }
+// 	=============================
+// 	TEST JWT TOKEN VALIDATIOn
+// 	=============================
 
 
+// 	token,err := authService.ValidateToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxfQ.zMk3KISsMiv_cBrc5H2oxyT0JXeGJUwPm4VDY0C-yXc")
 
-	// =============================
-	// TEST JWT TOKEN
-	// =============================
+// 	if err != nil {
+// 		fmt.Println("Error JWT Valdiation")
+// 	}
 
-	// fmt.Println(authService.GenerateToken(1001))
+// 	if token.Valid {
+// 		fmt.Println("Successsssssssssss valid")
+// 	} else {
+// 		fmt.Println("Invalidddddddddddddddd")
+// 	}
 
 
-	// =============================
-	// TEST UPLOAD AVATAR IN SERVICE
-	// =============================
 
-	// userService.SaveAvatar(6, "images/1-profile.png")
+// 	=============================
+// 	TEST JWT TOKEN
+// 	=============================
+
+// 	fmt.Println(authService.GenerateToken(1001))
+
+
+// 	=============================
+// 	TEST UPLOAD AVATAR IN SERVICE
+// 	=============================
+
+// 	userService.SaveAvatar(6, "images/1-profile.png")
 	
-	// =================================================
-	// CEK EMAIL TERSEDIA ATAU TIDAK MENGGUNAKAN SERVICE
-	// =================================================
+// 	=================================================
+// 	CEK EMAIL TERSEDIA ATAU TIDAK MENGGUNAKAN SERVICE
+// 	=================================================
 
-	// input := user.CheckEmailInput {
-	// 	Email: "pesulapmerah123@gmail.com",
-	// }
+// 	input := user.CheckEmailInput {
+// 		Email: "pesulapmerah123@gmail.com",
+// 	}
 
-	// bool, err := userService.IsEmailAvailable(input)
-	// if err != nil {
-	// 	fmt.Println("Gagal")
-	// }
+// 	bool, err := userService.IsEmailAvailable(input)
+// 	if err != nil {
+// 		fmt.Println("Gagal")
+// 	}
 	
-	// fmt.Println(bool)
+// 	fmt.Println(bool)
 
-	// ====================================
-	// TEST NYARI EMAIL MENGGUNAKAN SERVICE
-	// ====================================
+// 	====================================
+// 	TEST NYARI EMAIL MENGGUNAKAN SERVICE
+// 	====================================
 
-	// input := user.LoginInput {
-	// 	Email: "yudistira@gmail.com",
-	// 	Password: "yudistirar626",
-	// }
+// 	input := user.LoginInput {
+// 		Email: "yudistira@gmail.com",
+// 		Password: "yudistirar626",
+// 	}
 
-	// user, err := userService.LoginUser(input)
+// 	user, err := userService.LoginUser(input)
 
-	// if err != nil {
-	// 	fmt.Println("Gagal Login")
-	// 	fmt.Println(err.Error())
-	// return
-	// }
+// 	if err != nil {
+// 		fmt.Println("Gagal Login")
+// 		fmt.Println(err.Error())
+// 	return
+// 	}
 	
-	// fmt.Println(user.Email)
-	// fmt.Println(user.Name)
+// 	fmt.Println(user.Email)
+// 	fmt.Println(user.Name)
 
-	// =========================================
-	// TEST FIND BY EMAIL MENGGUNAKAN REPOSITORY
-	// =========================================
+// 	=========================================
+// 	TEST FIND BY EMAIL MENGGUNAKAN REPOSITORY
+// 	=========================================
 
-	// userByEmail, err := userRepository.FindByEmail("samsudin@gmail.com")
+// 	userByEmail, err := userRepository.FindByEmail("samsudin@gmail.com")
 
-	// if err != nil {
-	// 	fmt.Println(err.Error())
-	// }
+// 	if err != nil {
+// 		fmt.Println(err.Error())
+// 	}
 
-	// fmt.Println(userByEmail.Name)
+// 	fmt.Println(userByEmail.Name)
 
-	// ====================================
-	// TEST CREATE USER MENGGUNAKAN SERVICE
-	// ====================================
+// 	====================================
+// 	TEST CREATE USER MENGGUNAKAN SERVICE
+// 	====================================
 
-	// userInput := user.RegisterUserInput{}
-	// userInput.Name = "Pesulap merah"
-	// userInput.Occupation = "Pesulap"
-	// userInput.Email = "pesulapmerah@gmail.com"
-	// userInput.Password = "12345"
+// 	userInput := user.RegisterUserInput{}
+// 	userInput.Name = "Pesulap merah"
+// 	userInput.Occupation = "Pesulap"
+// 	userInput.Email = "pesulapmerah@gmail.com"
+// 	userInput.Password = "12345"
 
-	// userService.RegisterUser(userInput)
+// 	userService.RegisterUser(userInput)
 
-	// =======================================
-	// TEST CREATE USER MENGGUNAKAN REPOSITORY
-	// =======================================
+// 	=======================================
+// 	TEST CREATE USER MENGGUNAKAN REPOSITORY
+// 	=======================================
 
-	// user := user.User {
-	// 	Name : "Gus Samsudin",
-	// 	Occupation: "Padepokna Nur Dzat",
-	// 	Email: "samsudin@gmail.com",
+// 	user := user.User {
+// 		Name : "Gus Samsudin",
+// 		Occupation: "Padepokna Nur Dzat",
+// 		Email: "samsudin@gmail.com",
 	
-	// }
+// 	}
 
-	// userRepository.Save(user)
+// 	userRepository.Save(user)
+
+	
 
 
 	
