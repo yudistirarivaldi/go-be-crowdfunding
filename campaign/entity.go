@@ -3,6 +3,8 @@ package campaign
 import (
 	"crowdfunding/user"
 	"time"
+
+	"github.com/leekchan/accounting"
 )
 
 type Campaign struct {
@@ -21,6 +23,32 @@ type Campaign struct {
 	CampaignImages	[]CampaignImages
 	User 			user.User
 }
+
+func (c Campaign) GoalAmountFormatIDR() string {
+	
+	ac := accounting.Accounting{Symbol: "Rp ", Precision: 2, Thousand: ".", Decimal: ","}
+
+	return ac.FormatMoney(c.GoalAmount)
+
+}
+
+func (c Campaign) BackerCountFormatIDR() string {
+	
+	ac := accounting.Accounting{Symbol: "Rp ", Precision: 2, Thousand: ".", Decimal: ","}
+
+	return ac.FormatMoney(c.BackerCount)
+
+}
+
+func (c Campaign) CurrentAmountFormatIDR() string {
+	
+	ac := accounting.Accounting{Symbol: "Rp ", Precision: 2, Thousand: ".", Decimal: ","}
+
+	return ac.FormatMoney(c.CurrentAmount)
+
+}
+
+
 
 type CampaignImages struct {
 	ID	int

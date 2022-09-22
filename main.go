@@ -48,7 +48,9 @@ func main() {
 	transactionHandler := handler.NewTransactionHandler(transactionService)
 
 	
-	userWebHandler := webHandler.NewUserHandler()
+	userWebHandler := webHandler.NewUserHandler(userService)
+	campaignWebHandler := webHandler.NewCampaignHandler(campaignService, userService)
+	transactionWebHandler := webHandler.NewTransactionHandler(transactionService)
 	
 	router := gin.Default()
 	router.Use(cors.Default())
@@ -56,6 +58,10 @@ func main() {
 	router.HTMLRender = loadTemplates("./web/templates")
 
 	router.Static("/images", "./images") //untuk url routing
+	router.Static("/css", "./web/assets/css")
+	router.Static("/js", "./web/assets/js")
+	router.Static("/webfonts", "./web/assets/webfonts")
+	
 	api := router.Group("api/v1")
 
 	api.POST("/user", userHandler.RegisterUser)
@@ -75,6 +81,23 @@ func main() {
 	api.POST("/transactions/notification", transactionHandler.GetNotification)
 
 	router.GET("/users", userWebHandler.Index)
+	router.GET("/users/new", userWebHandler.New)
+	router.POST("/users", userWebHandler.Create)
+	router.GET("/users/edit/:id", userWebHandler.Edit)
+	router.POST("/users/update/:id", userWebHandler.Update)
+	router.GET("/users/avatar/:id", userWebHandler.NewAvatar)
+	router.POST("/users/avatar/:id", userWebHandler.CreateAvatar)
+
+	router.GET("/campaigns", campaignWebHandler.Index)
+	router.GET("/campaigns/new", campaignWebHandler.New)
+	router.POST("/campaigns", campaignWebHandler.Create)
+	router.GET("/campaigns/image/:id", campaignWebHandler.NewImage)
+	router.POST("/campaigns/image/:id", campaignWebHandler.CreateImage)
+	router.GET("/campaigns/edit/:id", campaignWebHandler.Edit)
+	router.POST("/campaigns/update/:id", campaignWebHandler.Update)
+	router.GET("/campaigns/show/:id", campaignWebHandler.Show)
+
+	router.GET("/transactions", transactionWebHandler.Index)
 
 	router.Run()
 
