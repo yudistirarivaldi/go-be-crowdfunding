@@ -60,6 +60,20 @@ userInput.Password = "12345"
 
 userService.RegisterUser(userInput)
 
+# TEST LOGIN USER MENGGUNAKAN SERVICE
+
+input := user.LoginInput {
+		Email: "yudis123@gmail.com",
+		Password: "password",
+	}
+
+	user, err := userService.LoginUser(input)
+	if err != nil {
+		fmt.Println("Gagal Login Brok")
+	}
+
+	fmt.Println(user.Email)
+	fmt.Println(user.PasswordHash)
 
 # TEST CREATE USER MENGGUNAKAN REPOSITORY
 
