@@ -1,7 +1,20 @@
 # go-api-crowdfunding
 
+# TEST VALIDATET JWT TOKEN
 
-# TEST JWT TOKEN
+token, err := authService.ValidateToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyMn0.qQi5QR7QbicbJ1SIX1_X46stcmzvefSOtac56zzYRsw")
+
+	if err != nil {
+		fmt.Println("ERROR")
+	}
+
+	if token.Valid {
+		fmt.Println("VALID BROKK")
+	} else {
+		fmt.Println("INVALID BRO")
+	}
+
+# TEST GENERATE JWT TOKEN
 	
 fmt.Println(authService.GenerateToken(1001))
 
