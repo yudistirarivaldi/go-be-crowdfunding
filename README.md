@@ -5,7 +5,7 @@
 	
 fmt.Println(authService.GenerateToken(1001))
 
-TEST UPLOAD AVATAR IN SERVICE
+# TEST UPLOAD AVATAR IN SERVICE
 	
 userService.SaveAvatar(6, "images/1-profile.png")
 
