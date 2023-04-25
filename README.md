@@ -1,6 +1,6 @@
 # go-api-crowdfunding
 
-# TEST VALIDATET JWT TOKEN
+# TEST VALIDATE JWT TOKEN
 
 token, err := authService.ValidateToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyMn0.qQi5QR7QbicbJ1SIX1_X46stcmzvefSOtac56zzYRsw")
 
