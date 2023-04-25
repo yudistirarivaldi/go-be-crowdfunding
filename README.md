@@ -7,7 +7,11 @@ fmt.Println(authService.GenerateToken(1001))
 
 TEST UPLOAD AVATAR IN SERVICE
 	
-userService.SaveAvatar(6, "images/1-profile.png")	
+userService.SaveAvatar(6, "images/1-profile.png")
+
+# TES SAVE AVATAR MENGGUNAKAN SERVICE
+
+userService.SaveAvatar(5, "image-1-2-.jpg")
 	
 # CEK EMAIL TERSEDIA ATAU TIDAK MENGGUNAKAN SERVICE
 
